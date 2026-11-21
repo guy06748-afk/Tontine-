@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://guy06748-afk.github.io/tontine/sitemap.xml

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tontine Facile – Organisez votre tontine gratuitement</title>
+<meta name="description" content="Outil gratuit pour organiser une tontine : calendrier des tours, suivi des cotisations, pénalités de retard, partage sur WhatsApp. Sans compte ni installation.">
+<style>
+:root{--bg:#f5f6fb;--card:#fff;--tx:#1b2140;--mu:#5a6283;--ac:#27348b;--ac-t:#fff;--gold:#e8a200;--ok:#1f8f55;--okb:#e3f5ea;--bd:#d9dcec;--warn:#b3401e;--soft:#eceefa;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111530;--card:#1a2045;--tx:#eef0ff;--mu:#a3abd1;--ac:#8d9bff;--ac-t:#10163a;--gold:#f5b82e;--ok:#4cc88b;--okb:#163a2c;--bd:#2d3566;--warn:#ff8f6b;--soft:#222a58;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111530;--card:#1a2045;--tx:#eef0ff;--mu:#a3abd1;--ac:#8d9bff;--ac-t:#10163a;--gold:#f5b82e;--ok:#4cc88b;--okb:#163a2c;--bd:#2d3566;--warn:#ff8f6b;--soft:#222a58;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 "Trebuchet MS",system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+h1{font:700 2rem/1.1 Georgia,"Times New Roman",serif;margin:8px 0 6px;letter-spacing:-.5px}
+h2{font:700 1.25rem/1.2 Georgia,serif;margin:0 0 12px}
+p.lead{color:var(--mu);margin:0 0 18px;max-width:60ch}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:16px}
+label{display:block;font-weight:700;font-size:.9rem;margin:12px 0 4px}
+input,select,textarea{width:100%;font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:10px 12px}
+textarea{min-height:120px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.row{grid-template-columns:1fr}}
+.hint{font-size:.82rem;color:var(--mu);margin:4px 0 0}
+button,.btn{font:inherit;font-weight:700;border:0;border-radius:10px;padding:11px 16px;cursor:pointer;background:var(--ac);color:var(--ac-t);text-decoration:none;display:inline-block}
+button.alt,.btn.alt{background:var(--soft);color:var(--tx)}
+button.gold{background:var(--gold);color:#241a00}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.msg{min-height:1.4em;margin-top:10px;font-weight:700;color:var(--ok)}
+.msg.err{color:var(--warn)}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--bd);white-space:nowrap}
+tr.cur td{background:var(--soft);font-weight:700}
+.ring{display:block;margin:0 auto 8px;width:min(100%,300px);height:auto}
+.ring text{fill:var(--tx);font:12px "Trebuchet MS",sans-serif}
+.members label{display:flex;align-items:center;gap:10px;margin:0;padding:10px 4px;border-bottom:1px solid var(--bd);font-weight:400;font-size:1rem}
+.members input{width:22px;height:22px;accent-color:var(--ok);flex:none}
+.members .who{flex:1}
+.tag{font-size:.78rem;background:var(--gold);color:#241a00;border-radius:99px;padding:2px 9px;font-weight:700}
+.stat{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:12px 0}
+.stat div{background:var(--soft);border-radius:10px;padding:10px 12px;flex:1;min-width:130px}
+.stat b{display:block;font-size:1.15rem}
+.late{color:var(--warn);font-weight:700}
+details{border-bottom:1px solid var(--bd);padding:10px 0}
+summary{cursor:pointer;font-weight:700}
+details p{margin:8px 0 0;color:var(--mu)}
+.hidden{display:none}
+footer{color:var(--mu);font-size:.85rem;text-align:center;margin-top:24px}
+@media print{body{background:#fff;color:#000}.noprint{display:none!important}.card{border:1px solid #999}}
+</style>
+</head>
+<body>
+<main>
+<header class="noprint">
+<h1>Tontine Facile</h1>
+<p class="lead">Créez le calendrier de votre tontine, suivez qui a cotisé et partagez le tout dans votre groupe WhatsApp. Gratuit, sans compte, sans installation.</p>
+</header>
+
+<section class="card noprint" id="setup">
+<h2>1. Créer votre tontine</h2>
+<label for="name">Nom de la tontine</label>
+<input id="name" placeholder="Ex. : Tontine des amis">
+<div class="row">
+<div><label for="amt">Cotisation par tour</label><input id="amt" type="number" min="0" inputmode="numeric" value="10000"></div>
+<div><label for="cur">Devise</label><select id="cur"><option>FCFA</option><option>€</option><option>$ CAD</option><option>$ USD</option><option>£</option></select></div>
+</div>
+<div class="row">
+<div><label for="freq">Fréquence</label><select id="freq"><option value="semaine">Chaque semaine</option><option value="quinzaine">Toutes les 2 semaines</option><option value="mois" selected>Chaque mois</option></select></div>
+<div><label for="start">Date du 1er tour</label><input id="start" type="date"></div>
+</div>
+<label for="pen">Pénalité de retard (par membre en retard)</label>
+<input id="pen" type="number" min="0" inputmode="numeric" value="0">
+<label for="mem">Membres (un nom par ligne)</label>
+<textarea id="mem" placeholder="Awa&#10;Jean&#10;Marie&#10;Paul"></textarea>
+<p class="hint">L’ordre des noms est l’ordre de passage. Vous pouvez aussi tirer au sort.</p>
+<div class="actions">
+<button id="go">Créer le calendrier</button>
+<button id="shuf" class="alt">Tirer l’ordre au sort</button>
+</div>
+<div id="m1" class="msg" role="status"></div>
+</section>
+
+<div id="res" class="hidden">
+<section class="card" id="cal">
+<h2 id="ttl">Calendrier</h2>
+<svg id="ring" class="ring" viewBox="0 0 300 300" role="img" aria-label="Cercle des membres"></svg>
+<div class="stat"><div><span>Cagnotte par tour</span><b id="pot"></b></div><div><span>Nombre de tours</span><b id="nr"></b></div></div>
+<div class="scroll"><table><thead><tr><th>Tour</th><th>Date</th><th>Reçoit</th><th>Cagnotte</th></tr></thead><tbody id="tb"></tbody></table></div>
+</section>
+
+<section class="card" id="trk">
+<h2>2. Suivre les cotisations</h2>
+<label for="rsel">Tour à vérifier</label>
+<select id="rsel"></select>
+<div class="stat"><div><span>Collecté</span><b id="col"></b></div><div><span>Reste à collecter</span><b id="rest"></b></div></div>
+<div class="members" id="ml"></div>
+<p id="late" class="late"></p>
+<h2 style="margin-top:20px">Bilan par membre</h2>
+<div class="scroll"><table><thead><tr><th>Membre</th><th>Tours payés</th><th>Total versé</th></tr></thead><tbody id="bil"></tbody></table></div>
+</section>
+
+<section class="card noprint">
+<h2>3. Partager</h2>
+<div class="actions">
+<button id="cp" class="gold">Copier le résumé</button>
+<a id="wa" class="btn alt" target="_blank" rel="noopener">Envoyer sur WhatsApp</a>
+<button id="pr" class="alt">Imprimer</button>
+<button id="rs" class="alt">Tout effacer</button>
+</div>
+<div id="m2" class="msg" role="status"></div>
+</section>
+</div>
+
+<section class="card noprint" id="prem">
+<h2>Version Premium</h2>
+<p>Règlement intérieur de tontine prêt à imprimer, modèle Excel et Google Sheets, gestion de plusieurs tontines et rappels de retard à copier-coller.</p>
+<div id="premlink"></div>
+</section>
+
+<section class="card noprint">
+<h2>Questions fréquentes</h2>
+<details><summary>Comment fonctionne une tontine ?</summary><p>Chaque membre verse la même somme à chaque tour. À chaque tour, la cagnotte entière revient à une personne, jusqu’à ce que tout le monde ait reçu son tour.</p></details>
+<details><summary>Comment choisir l’ordre de passage ?</summary><p>Beaucoup de groupes tirent au sort pour éviter les disputes. D’autres laissent passer en premier la personne qui en a le plus besoin. Fixez la règle avant de commencer.</p></details>
+<details><summary>Que faire en cas de retard de paiement ?</summary><p>Décidez d’une pénalité à l’avance et écrivez-la dans le règlement. L’outil vous rappelle qui est en retard et le montant à ajouter.</p></details>
+<details><summary>Mes données sont-elles en sécurité ?</summary><p>Tout reste sur votre téléphone, dans votre navigateur. Rien n’est envoyé sur un serveur. Si vous videz les données du navigateur, la tontine est effacée : copiez le résumé pour en garder une trace.</p></details>
+</section>
+<footer>Tontine Facile – outil gratuit pour organiser vos tontines.</footer>
+</main>
+<script>
+const PREMIUM_URL=""; /* Collez ici le lien de votre produit Premium sur Chariow */
+const K="tontine-facile-v1";
+let S={name:"",cur:"FCFA",amt:10000,freq:"mois",start:"",pen:0,members:[],paid:{},round:0};
+const $=id=>document.getElementById(id);
+function load(){try{const r=localStorage.getItem(K);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}}
+function save(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+const fmt=n=>Number(n).toLocaleString("fr-FR")+" "+S.cur;
+function rd(i){const d=new Date(S.start+"T12:00:00");if(S.freq==="semaine")d.setDate(d.getDate()+7*i);else if(S.freq==="quinzaine")d.setDate(d.getDate()+14*i);else d.setMonth(d.getMonth()+i);return d}
+const fd=d=>d.toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"long",year:"numeric"});
+function say(id,t,err){const e=$(id);e.textContent=t;e.className="msg"+(err?" err":"")}
+function cell(tr,t){const td=document.createElement("td");td.textContent=t;tr.appendChild(td);return td}
+const isPaid=(r,m)=>!!S.paid[r+"_"+m];
+function done(r){return S.members.every((_,m)=>isPaid(r,m))}
+function fillForm(){$("name").value=S.name;$("amt").value=S.amt;$("cur").value=S.cur;$("freq").value=S.freq;$("start").value=S.start;$("pen").value=S.pen;$("mem").value=S.members.join("\n")}
+function readForm(){
+ const names=[...new Set($("mem").value.split("\n").map(s=>s.trim()).filter(Boolean))];
+ const amt=parseFloat($("amt").value);
+ if(names.length<2){say("m1","Ajoutez au moins 2 membres, un nom par ligne.",1);return false}
+ if(!(amt>0)){say("m1","Indiquez le montant de la cotisation.",1);return false}
+ if(!$("start").value){say("m1","Choisissez la date du premier tour.",1);return false}
+ S.name=$("name").value.trim();S.amt=amt;S.cur=$("cur").value;S.freq=$("freq").value;S.start=$("start").value;S.pen=Math.max(0,parseFloat($("pen").value)||0);
+ const changed=names.join("|")!==S.members.join("|");
+ S.members=names;if(changed){S.paid={};S.round=0}
+ return true}
+function render(){
+ if(!S.members.length){$("res").className="hidden";return}
+ $("res").className="";
+ const n=S.members.length;
+ $("ttl").textContent=S.name||"Calendrier";
+ $("pot").textContent=fmt(S.amt*n);$("nr").textContent=n;
+ const tb=$("tb");tb.textContent="";
+ const sel=$("rsel");sel.textContent="";
+ S.members.forEach((m,i)=>{
+  const tr=document.createElement("tr");if(i===S.round)tr.className="cur";
+  cell(tr,i+1);cell(tr,fd(rd(i)));cell(tr,m);cell(tr,fmt(S.amt*n));tb.appendChild(tr);
+  const o=document.createElement("option");o.value=i;o.textContent="Tour "+(i+1)+" – "+m+" – "+rd(i).toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(done(i)?" ✓":"");sel.appendChild(o)});
+ sel.value=S.round;
+ drawRing();renderRound();renderBilan();shareLink()}
+function drawRing(){
+ const n=S.members.length,svg=$("ring"),ns="http://www.w3.org/2000/svg";svg.textContent="";
+ const R=100,cx=150,cy=150;
+ const c=document.createElementNS(ns,"circle");c.setAttribute("cx",cx);c.setAttribute("cy",cy);c.setAttribute("r",R);c.setAttribute("fill","none");c.setAttribute("stroke","var(--bd)");c.setAttribute("stroke-width","2");svg.appendChild(c);
+ S.members.forEach((m,i)=>{
+  const a=-Math.PI/2+2*Math.PI*i/n,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a);
+  const g=document.createElementNS(ns,"circle");g.setAttribute("cx",x);g.setAttribute("cy",y);
+  const cur=i===S.round,rec=i<S.round||done(i);
+  g.setAttribute("r",cur?15:11);g.setAttribute("fill",cur?"var(--gold)":rec?"var(--ok)":"var(--ac)");svg.appendChild(g);
+  const t=document.createElementNS(ns,"text");t.setAttribute("x",cx+(R+26)*Math.cos(a));t.setAttribute("y",cy+(R+26)*Math.sin(a)+4);t.setAttribute("text-anchor",Math.cos(a)>.3?"start":Math.cos(a)<-.3?"end":"middle");t.textContent=m.length>9?m.slice(0,8)+"…":m;svg.appendChild(t)});
+ const t=document.createElementNS(ns,"text");t.setAttribute("x",cx);t.setAttribute("y",cy-4);t.setAttribute("text-anchor","middle");t.setAttribute("style","font-weight:700;font-size:13px");t.textContent="Tour "+(S.round+1)+" / "+n;svg.appendChild(t);
+ const t2=document.createElementNS(ns,"text");t2.setAttribute("x",cx);t2.setAttribute("y",cy+16);t2.setAttribute("text-anchor","middle");t2.textContent="reçoit : "+S.members[S.round];svg.appendChild(t2)}
+function renderRound(){
+ const r=S.round,n=S.members.length,ml=$("ml");ml.textContent="";
+ let paid=0;const late=[];
+ S.members.forEach((m,i)=>{
+  const lb=document.createElement("label");
+  const cb=document.createElement("input");cb.type="checkbox";cb.checked=isPaid(r,i);
+  cb.onchange=()=>{if(cb.checked)S.paid[r+"_"+i]=1;else delete S.paid[r+"_"+i];save();render()};
+  const w=document.createElement("span");w.className="who";w.textContent=m;
+  lb.appendChild(cb);lb.appendChild(w);
+  if(i===r){const tg=document.createElement("span");tg.className="tag";tg.textContent="reçoit";lb.appendChild(tg)}
+  ml.appendChild(lb);
+  if(cb.checked)paid++;else late.push(m)});
+ $("col").textContent=fmt(paid*S.amt);$("rest").textContent=fmt((n-paid)*S.amt);
+ $("late").textContent=late.length?("Pas encore cotisé : "+late.join(", ")+(S.pen>0?". Pénalité à ajouter après la date limite : "+fmt(S.pen)+" par personne.":".")):"Tout le monde a cotisé pour ce tour ✓"}
+function renderBilan(){
+ const n=S.members.length,b=$("bil");b.textContent="";
+ S.members.forEach((m,i)=>{let c=0;for(let r=0;r<n;r++)if(isPaid(r,i))c++;
+  const tr=document.createElement("tr");cell(tr,m);cell(tr,c+" / "+n);cell(tr,fmt(c*S.amt));b.appendChild(tr)})}
+function summary(){
+ const n=S.members.length,r=S.round;let t=(S.name||"Notre tontine")+"\n";
+ t+="Cotisation : "+fmt(S.amt)+" par tour ("+S.freq+") – cagnotte : "+fmt(S.amt*n)+"\n\nCalendrier :\n";
+ S.members.forEach((m,i)=>{t+=(i+1)+". "+rd(i).toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})+" – "+m+(done(i)?" ✓":"")+"\n"});
+ const late=S.members.filter((_,i)=>!isPaid(r,i));
+ t+="\nTour "+(r+1)+" (reçoit : "+S.members[r]+") – ";
+ t+=late.length?"en attente : "+late.join(", ")+(S.pen>0?"\nPénalité de retard : "+fmt(S.pen):""):"tout le monde a cotisé ✓";
+ return t}
+function shareLink(){$("wa").href="https://wa.me/?text="+encodeURIComponent(summary())}
+function premium(){const d=$("premlink");d.textContent="";
+ if(PREMIUM_URL){const a=document.createElement("a");a.className="btn gold";a.href=PREMIUM_URL;a.target="_blank";a.rel="noopener";a.textContent="Obtenir la version Premium";d.appendChild(a)}
+ else{const p=document.createElement("p");p.className="hint";p.textContent="Bientôt disponible.";d.appendChild(p)}}
+$("go").onclick=()=>{if(readForm()){S.round=Math.min(S.round,S.members.length-1);save();render();say("m1","Calendrier créé.");$("cal").scrollIntoView({behavior:"smooth"})}};
+$("shuf").onclick=()=>{
+ const names=$("mem").value.split("\n").map(s=>s.trim()).filter(Boolean);
+ if(names.length<2){say("m1","Ajoutez d’abord au moins 2 membres.",1);return}
+ if(Object.keys(S.paid).length){say("m1","Le tirage au sort n’est possible qu’avant les premières cotisations.",1);return}
+ for(let i=names.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[names[i],names[j]]=[names[j],names[i]]}
+ $("mem").value=names.join("\n");say("m1","Ordre tiré au sort. Cliquez sur « Créer le calendrier ».")};
+$("rsel").onchange=e=>{S.round=parseInt(e.target.value,10);save();render()};
+$("cp").onclick=async()=>{const t=summary();try{await navigator.clipboard.writeText(t);say("m2","Résumé copié.")}catch(e){const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");say("m2","Résumé copié.")}catch(x){say("m2","Copie impossible : sélectionnez le texte manuellement.",1)}ta.remove()}};
+$("pr").onclick=()=>window.print();
+$("rs").onclick=()=>{if($("rs").dataset.ok){S={name:"",cur:"FCFA",amt:10000,freq:"mois",start:"",pen:0,members:[],paid:{},round:0};save();fillForm();render();say("m2","Tout est effacé.");$("rs").textContent="Tout effacer";delete $("rs").dataset.ok}else{$("rs").dataset.ok=1;$("rs").textContent="Confirmer l’effacement";say("m2","Cliquez à nouveau pour effacer définitivement.",1)}};
+load();fillForm();premium();render();
+</script>
+</body>
+</html>
